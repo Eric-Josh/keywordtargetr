@@ -70,7 +70,7 @@
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="result-actions">
-                                            <div class="result-views">
+                                                <div class="result-views">
                                                     <div class="form-check">
                                                         <label class="form-check-label"> 
                                                             <input type="checkbox" class="form-check-input bulk-check" id="bulk-check"> All
@@ -78,16 +78,19 @@
                                                     </div>
                                                 </div>
                                                 <div class="result-sorting">
-                                                    <span>Action:</span>
-                                                    <select class="form-control border-0" id="actions">
-                                                        <option value="" >Select</option>
-                                                        <option value="1">Export to CSV</option>
-                                                        <option value="2">Export to Excel</option>
-                                                        <option value="3">Copy to Clipboard</option>
-                                                        <option value="4">Save to List</option>
-                                                    </select>
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-primary">Actions</button>
+                                                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" 
+                                                            data-toggle="dropdown">
+                                                        </button>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item" role="button" id="csv-export">Export to CSV</a>
+                                                            <a class="dropdown-item" role="button" id="xls-export">Export to Excel</a>
+                                                            <a class="dropdown-item" role="button" id="cclipboard">Copy to Clipboard</a>
+                                                            <a class="dropdown-item" role="button" id="save-list">Save to List</a>
+                                                        </div>
+                                                    </div> 
                                                 </div>
-                                                
                                             </div>
                                         </div>
                                     </div>
@@ -124,25 +127,88 @@
 </div>
 <!-- The error notice Modal -->
 <div class="modal" id="noticeModal">
-  <div class="modal-dialog modal-sm modal-dialog-centered">
-    <div class="modal-content">
-		<!-- Modal body -->
-		<div class="modal-body text-center notice-body"></div>
-        <div class="modal-footer">
-            <button  type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Modal body -->
+            <div class="modal-body text-center notice-body"></div>
+            <div class="modal-footer">
+                <button  type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
-    
-  </div>
+</div>
+
+<!-- The save Modal -->
+<div class="modal fade" id="save-content">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="custom-save-header"></div>
+            <!-- Modal body -->
+            <div class="modal-body display-save-content">
+
+                <div class="row default-list-view">
+                    <div class="col-md-5 offset-md-1">
+                    <button class="btn btn-outline-primary justify-center w-half  shadow-none create-list" data-createlist="1.1">
+                        <i class="fas fa-list-ul"></i>
+                        <span>{{ __('Create List') }}</span>
+                    </button>
+                    </div>
+                    <div class="col-md-5">
+                        <button class="btn btn-outline-primary justify-center w-half  shadow-none select-list" data-selectlist="1.2">
+                            <i class="fas fa-list-ul"></i>
+                            <span>{{ __('Select List') }}</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row create-list-view">
+                    <div class="col-md-12">
+                        <h6><b>New List</b></h6>
+                        <div class="input-group mb-3 ">
+                        <input type="text" 
+                            class="form-control block mt-1 border-gray-300 focus:border-indigo-300 
+                                    focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm new-list-name" 
+                            name="new_list_name" 
+                            id="new-list-name"
+                        >
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-success justify-center w-half gap-2 shadow-none create-list-name">
+                            {{__('Create')}}
+                            </button>
+                        </div>
+                        </div>
+                        <span id="list-error" style="color:red"></span>
+                    </div>
+                </div>
+                <div class="row select-list-view">
+                    <div class="col-md-12">
+                        <h6><b>Select List</b></h6>
+                        <select class="form-control  block mt-1  border-gray-300 focus:border-indigo-300 
+                            focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm select-list-name"  
+                            name="select_list_name" 
+                            id="select-list-name" >
+                            <option value="" disabled selected hidden>Choose List</option>
+                            @foreach($lists as $list)
+                            <option value="{{ $list->id }}">{{ $list->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="row save-list-view">
+                    <div class="col-md-12">
+                        <h2 class="list-header"></h2><br>
+                        <span class="notify"></span>
+                        <button type="button" class="btn btn-outline-success mx-auto save-list">Save</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-secondary btn-sm prev-step hide-out" style="float-left">Previous</button>
+                <button type="button" class="btn btn-secondary btn-sm next-step hide-out" style="float-left">Next</button>
+                <button type="button" class="btn btn-secondary btn-sm close-modal" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="{{ asset('js/switch-provider.js') }}"></script>
-<script>
-    $(function(){
-        $('.keyword-search').click(function(){
-        console.log('working')
-        let keyitem = $(this).data('item')
-        $('#keyword').val(keyitem)
-    })
-    })
-</script>
 @stop

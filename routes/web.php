@@ -26,3 +26,4 @@ Route::get('/search/csv-export', [KeywordController::class, 'csvExport']);
 Route::get('/search/xls-export', [KeywordController::class, 'excelExport']);
 Route::get('/search/list', [KeywordController::class, 'showList']);
 Route::post('/search/list/store', [KeywordController::class, 'saveList']);
+Route::get('/list/store', [KeywordController::class, 'newList']);

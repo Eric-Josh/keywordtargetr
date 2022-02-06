@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Languages;
+use App\Models\SavedList;
+use App\Models\SavedListTransaction;
 use \Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\KeywordExport;
@@ -13,8 +15,9 @@ class KeywordController extends Controller
     public function index()
     {
         $languages = Languages::all();
+        $lists = SavedList::all();
 
-        return view('search', compact('languages'));
+        return view('search', compact('languages','lists'));
     }
 
     public function search(Request $request)
@@ -61,9 +64,30 @@ class KeywordController extends Controller
         return Excel::download(new KeywordExport($dataExport), 'keywords.xlsx');
     }
 
+    public function newList(Request $request)
+    {
+        $request->validate([$request->listName => 'unique:kt_list']);
+
+        $list = SavedList::create(['name' => $request->listName]);
+
+        return response()->json([
+            'listId' => $list->id,
+            'listName' => $list->name
+        ]);
+    }
+
     public function saveList(Request $request)
     {
+        SavedListTransaction::create([
+            'list_id' => $request->listId,
+            'provider' => $request->provider,
+            'keyword' => $request->keywordData,
+            'language_code' => $request->langCode
+        ]);
 
+        return response()->json([
+            'status' => 'keyword(s) added to list',
+        ]);
     }
 
     public function showList()

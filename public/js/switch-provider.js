@@ -3,7 +3,7 @@ $(function(){
     let keyworder;
 
     $('#search').click(function(){
-        let provider =$('#provider').val(),
+        let provider = $('#provider').val(),
             keyword = $('#keyword').val(),
             lang = $('#language').val();
 
@@ -151,10 +151,9 @@ $(function(){
     })
 
     //actions
-    $('#actions').change(function(){
+    $('#csv-export').click(function(){
         if($('#tbody :checkbox:checked').length == 0){
-            $('.notice-body').html('Please select one or more keywords');
-            $('#noticeModal').modal({backdrop:'static', keyboard:false, show:true});
+            checkSelected()
         }else{
             let selectedKeywords = [];
             $('.single-check:checked').each(function(i){
@@ -162,53 +161,238 @@ $(function(){
                 element = this;
             })
 
-            if($(this).val() == 1){
-                $.ajax({
-                    url: '/search/csv-export',
-                    method: 'get',
-                    data: {dataExport: selectedKeywords},
-                    xhrFields: { responseType: 'blob' },
-                    success:function(response){
-                        var blob = new Blob([response]);
-                        var link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        const cd = new Date();
-                        let d = cd.getDate()+'-'+cd.getMonth()+'-'+cd.getFullYear()+'_'+cd.getHours()+':'+cd.getMinutes()+':'+cd.getSeconds();
-                        link.download = "keyword"+d+".csv";
-                        link.click();
-                    },            
-                    error: function(blob){
-                        if(response.responseJSON.message){
-                            $('.notice-body').html(response.responseJSON.message);
-                            $('#noticeModal').modal({backdrop:'static', keyboard:false, show:true});
-                        }
+            $.ajax({
+                url: '/search/csv-export',
+                method: 'get',
+                data: {dataExport: selectedKeywords},
+                xhrFields: { responseType: 'blob' },
+                beforeSend: function(){
+                    $('#loadModal').modal({backdrop:'static', keyboard:false, show:true})
+                },
+                success:function(response){
+                    $('#loadModal').modal('hide');
+                    var blob = new Blob([response]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    const cd = new Date();
+                    let d = cd.getDate()+'-'+cd.getMonth()+'-'+cd.getFullYear()+'_'+cd.getHours()+':'+cd.getMinutes()+':'+cd.getSeconds();
+                    link.download = "keyword"+d+".csv";
+                    link.click();
+                },            
+                error: function(blob){
+                    if(response.responseJSON.message){
+                        $('.notice-body').html(response.responseJSON.message);
+                        $('#noticeModal').modal({backdrop:'static', keyboard:false, show:true});
                     }
-                })
-            }else if($(this).val() == 2){ 
-                $.ajax({
-                    url: '/search/xls-export',
-                    method: 'get',
-                    data: {dataExport: selectedKeywords},
-                    xhrFields: { responseType: 'blob' },
-                    success:function(response){
-                        var blob = new Blob([response]);
-                        var link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        const cd = new Date();
-                        let d = cd.getDate()+'-'+cd.getMonth()+'-'+cd.getFullYear()+'_'+cd.getHours()+':'+cd.getMinutes()+':'+cd.getSeconds();
-                        link.download = "keyword"+d+".xlsx";
-                        link.click();
-                    },            
-                    error: function(blob){
-                        if(response.responseJSON.message){
-                            $('.notice-body').html(response.responseJSON.message);
-                            $('#noticeModal').modal({backdrop:'static', keyboard:false, show:true});
-                        }
-                    }
-                })
-            }
-            
+                }
+            })
         }
     })
+
+    $('#xls-export').click(function(){
+        if($('#tbody :checkbox:checked').length == 0){
+            checkSelected()
+        }else{
+            let selectedKeywords = [];
+            $('.single-check:checked').each(function(i){
+                selectedKeywords.push($(this).data('item'));
+                element = this;
+            })
+            $.ajax({
+                url: '/search/xls-export',
+                method: 'get',
+                data: {dataExport: selectedKeywords},
+                xhrFields: { responseType: 'blob' },
+                beforeSend: function(){
+                    $('#loadModal').modal({backdrop:'static', keyboard:false, show:true})
+                },
+                success:function(response){
+                    $('#loadModal').modal('hide');
+                    var blob = new Blob([response]);
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    const cd = new Date();
+                    let d = cd.getDate()+'-'+cd.getMonth()+'-'+cd.getFullYear()+'_'+cd.getHours()+':'+cd.getMinutes()+':'+cd.getSeconds();
+                    link.download = "keyword"+d+".xlsx";
+                    link.click();
+                },            
+                error: function(blob){
+                    if(response.responseJSON.message){
+                        $('.notice-body').html(response.responseJSON.message);
+                        $('#noticeModal').modal({backdrop:'static', keyboard:false, show:true});
+                    }
+                }
+            })
+        }
+    })
+
+    $('#cclipboard').click(function(){
+        if($('#tbody :checkbox:checked').length == 0){
+            checkSelected()
+        }else{
+            let selectedKeywords = [];
+            keywords = '';
+            $('.single-check:checked').each(function(i){
+                selectedKeywords.push($(this).data('item'));
+                element = this;
+            })
+
+            for (var i=0; i<selectedKeywords.length; i++){
+                if(keywords.length == i){
+                    keywords += selectedKeywords[i]
+                }else{
+                    keywords += selectedKeywords[i]+"\n";
+                }                    
+            }
+
+            let $temp = $("<textarea>");
+            $("body").append($temp);
+            $temp.val(keywords).select();
+            document.execCommand("copy");
+            $temp.remove();
+            $('.notice-body').html('Keyword(s) copied!');
+            $('#noticeModal').modal({backdrop:'static', keyboard:false, show:true});
+        }
+    })
+
+    $('#save-list').click(function(){
+        if($('#tbody :checkbox:checked').length == 0){
+            checkSelected()
+        }else{
+            let selectedKeywords = [];
+            $('.single-check:checked').each(function(i){
+                selectedKeywords.push($(this).data('item'));
+                element = this;
+            })
+            switcher(null);
+            $('#list-error').text('');
+            $('#save-content').modal({backdrop:'static', keyboard:false, show:true});
+        }
+    })
+
+    function checkSelected(){
+        $('.notice-body').html('Please select one or more keywords');
+        $('#noticeModal').modal({backdrop:'static', keyboard:false, show:true});
+    }
+    
+    // create list menu
+    $('.create-list').click(function(){
+        let switchKey = $(this).data('createlist');
+        $('#list-error').text('');
+        switcher(switchKey);
+        localStorage.setItem('previousStage', null);
+    })
+
+    // select list menu
+    $('.select-list').click(function(){
+        let switchKey = $(this).data('selectlist');
+        switcher(switchKey);
+        localStorage.setItem('previousStage', null);
+    });
+
+    // create new list name
+    $('.create-list-name').click(function(){
+        if($('#new-list-name').val() == ''){
+            $('#list-error').text('Field is required!');
+        }else{
+            $('#list-error').text('');
+            $.ajax({
+                url: '/list/store',
+                method: 'get',
+                data: {
+                    listName: $('.new-list-name').val()
+                },
+                success:function(response){
+                    localStorage.setItem('listName', response.listName);
+                    localStorage.setItem('listId', response.listId);
+                    switcher(2);
+                },            
+                error: function(response){
+                    $('#list-error').text(response.responseJSON.message);
+                }
+            });
+        }
+    })
+
+    // select list dropdown
+    $('.select-list-name').change(function(){
+        localStorage.setItem('listName', $(this).find(":selected").text());
+        localStorage.setItem('listId', $(this).find(":selected").val());
+        switcher(2);
+    });
+
+    $('.save-list').click(function(){
+        var keywordData = [];
+        $('.single-check:checked').each(function(i){
+            keywordData.push($(this).data('item'));
+            element = this;
+        });
+
+        // post saved data
+        $.ajax({
+            url: '/search/list/store',
+            method: 'get',
+            data: {
+                listId: localStorage.getItem('listId'),
+                provider: $('#provider').text(),
+                keywordData: keywordData,
+                langCode: $('#language').val()
+            },
+            success:function(response){
+                $('.save-list').hide();
+                $('.notify').html(response.status);
+                $('#save-content').modal('hide');
+            },
+            error: function(response){
+
+            }
+        })
+
+    })
+
+    $('.prev-step').click(function(){
+        let switchKey = localStorage.getItem('previousStage');
+        switcher(switchKey);
+    })
+
+    function switcher(switchKey){
+        switch (switchKey) {
+            case 1.1:
+                $('.default-list-view').fadeOut();
+                $('.create-list-view').fadeIn().css('padding','0px 10px');
+                $('.save-list-view').hide();
+                $('.select-list-view').hide();
+                $('.prev-step').show();
+                $('.next-step').hide();
+                break;
+            case 1.2:
+                $('.default-list-view').hide();
+                $('.create-list-view').hide();
+                $('.save-list-view').hide();
+                $('.select-list-view').fadeIn().css('padding','0px 10px');
+                $('.prev-step').show();
+                $('.next-step').hide();
+                break;
+            case 2:
+                $('.default-list-view').hide();
+                $('.create-list-view').hide();
+                $('.save-list-view').fadeIn().css('padding','0px 10px');
+                $('.list-header').html('<b>List: '+localStorage.getItem('listName')+'</b>');
+                $('.select-list-view').hide();
+                $('.prev-step').hide();
+                $('.next-step').hide();
+                break;
+        
+            default:
+                $('.default-list-view').fadeIn();
+                $('.create-list-view').hide();
+                $('.select-list-view').hide();
+                $('.save-list-view').hide();
+                $('.prev-step').hide();
+                $('.next-step').hide();
+                break;
+        }
+    }
+    
 
 })
