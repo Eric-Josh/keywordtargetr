@@ -9,6 +9,7 @@ use App\Models\SavedListTransaction;
 use \Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\KeywordExport;
+use DB;
 
 class KeywordController extends Controller
 {
@@ -66,8 +67,6 @@ class KeywordController extends Controller
 
     public function newList(Request $request)
     {
-        $request->validate([$request->listName => 'unique:kt_list']);
-
         $list = SavedList::create(['name' => $request->listName]);
 
         return response()->json([
@@ -76,22 +75,72 @@ class KeywordController extends Controller
         ]);
     }
 
-    public function saveList(Request $request)
+    public function newListPost(Request $request)
     {
-        SavedListTransaction::create([
-            'list_id' => $request->listId,
-            'provider' => $request->provider,
-            'keyword' => $request->keywordData,
-            'language_code' => $request->langCode
-        ]);
+        $request->validate([ 'name' => ['required','unique:kt_list']]);
 
+        SavedList::create(['name' => $request->name]);
+
+        return redirect()->route('list.show')->withStatus('List Created!');
+    }
+
+    public function updateList(Request $request, $id)
+    {
+        $list = SavedList::findOrFail($id);
+
+        $list->update(['name' => $request->name]);
+
+        return redirect()->route('list.show')->withStatus('List Updated!');
+    }
+
+    public function destroyList($id)
+    {
+        $list = SavedList::findOrFail($id);
+        $listTrans = SavedListTransaction::where('list_id', $id);
+
+        $listTrans->delete();
+        $list->delete();
+
+        return redirect()->route('list.show')->withStatus('List Deleted!');
+    }
+
+    public function saveKeyword(Request $request)
+    {
+        foreach($request->keywordData as $keyword){
+            SavedListTransaction::create([
+                'list_id' => $request->listId,
+                'provider' => $request->provider,
+                'keyword' => $keyword,
+                'language_code' => $request->langCode
+            ]);
+        }
+        
         return response()->json([
             'status' => 'keyword(s) added to list',
         ]);
     }
 
-    public function showList()
+    public function showList(Request $request)
     {
-        
+        $listSearch = request()->query('list_search');
+
+        if(isset($listSearch)){
+            $lists = DB::select(DB::raw("select l.id, l.name, count(lt.list_id) as total from kt_list l 
+                left join kt_list_transactions lt on l.id=lt.list_id
+                where l.name like '%".$listSearch."%'
+                group by 1,2 order by l.created_at desc "));
+        }else{
+            $lists = DB::select(DB::raw('select l.id, l.name, count(lt.list_id) as total from kt_list l left join kt_list_transactions lt on l.id=lt.list_id
+            group by 1,2 order by l.created_at desc'));
+        }
+        return view('lists', compact('lists'));
+    }
+
+    public function listKeyword($id)
+    {
+        $list = SavedList::where('id', $id)->first();
+        $keywords = SavedListTransaction::where('list_id', $id)->paginate(20);
+
+        return view('list-keyword', compact('keywords','list'));
     }
 }

@@ -18,10 +18,10 @@
                                     <div class="col-lg-2 col-md-3 col-sm-12 p-0">
                                         <select class="form-control" id="provider" name="provider">
                                             <option value="" disabled selected hidden>Provider</option>
-                                            <option value="1">Google</option>
-                                            <option value="2">Youtube</option>
-                                            <option value="3">Amazon</option>
-                                            <option value="4">Twitter</option>
+                                            <option value="Google">Google</option>
+                                            <option value="Youtube">Youtube</option>
+                                            <option value="Amazon">Amazon</option>
+                                            <option value="Twitter">Twitter</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-sm-12 p-0">

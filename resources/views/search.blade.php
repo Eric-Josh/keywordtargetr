@@ -2,7 +2,12 @@
 
 @section('content')
 <nav class="navbar navbar-expand-sm bg-light navbar-light">
-    <a class="navbar-brand text-primary text-capitalize header-title" href="#">keyword targetr</a>
+    <a class="navbar-brand text-primary text-capitalize header-title" href="{{ route('search') }}">keyword targetr</a>
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('list.show') }}">Saved List</a>
+        </li>
+    </ul>
 </nav>
 
 <div class="container mt-4">
@@ -17,10 +22,10 @@
                                     <div class="col-lg-2 col-md-3 col-sm-12 p-0">
                                         <select class="form-control" id="provider" name="provider">
                                             <option value="" disabled selected hidden>Provider</option>
-                                            <option value="1" {{ request()->query('provider') == '1' ? 'selected': ''}}>Google</option>
-                                            <option value="2" {{ request()->query('provider') == '2' ? 'selected': ''}}>Youtube</option>
-                                            <option value="3" {{ request()->query('provider') == '3' ? 'selected': ''}}>Amazon</option>
-                                            <option value="4" {{ request()->query('provider') == '4' ? 'selected': ''}}>Twitter</option>
+                                            <option value="Google" {{ request()->query('provider') == 'Google' ? 'selected': ''}}>Google</option>
+                                            <option value="Youtube" {{ request()->query('provider') == 'Youtube' ? 'selected': ''}}>Youtube</option>
+                                            <option value="Amazon" {{ request()->query('provider') == 'Amazon' ? 'selected': ''}}>Amazon</option>
+                                            <option value="Twitter" {{ request()->query('provider') == 'Twitter' ? 'selected': ''}}>Twitter</option>
                                         </select>
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-sm-12 p-0">
@@ -96,18 +101,44 @@
                                     </div>
                                 </div>
                                 <div class="result-body">
-                                    <div class="table-responsive">
-                                        <table class="table widget-26">
-                                            <tbody id="tbody"></tbody>
-                                        </table>
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="tab" href="#menu1">
+                                                <b>Keyword Suggestions</b></a>
+                                        </li>
+                                        <li class="nav-item twit-tags">
+                                            <a class="nav-link" data-toggle="tab" href="#menu2"><b>Hashtags</b></a>
+                                        </li>
+                                    </ul>
+                                    <!-- Tab panes -->
+                                    <div class="tab-content">
+                                        <div id="menu1" class="container tab-pane active"><br>
+                                            <div class="table-responsive">
+                                                <table class="table widget-26">
+                                                    <tbody id="tbody"></tbody>
+                                                </table>
+                                            </div>
+                                            <nav class="d-flex justify-content-center">
+                                                <div class="mb-3" id="pagination-container1"></div>
+                                            </nav>
+                                        </div>
+                                        <div id="menu2" class="container tab-pane fade"><br>    
+                                            <div class="table-responsive">
+                                                <table class="table widget-26">
+                                                    <tbody id="tbody2"></tbody>
+                                                </table>
+                                            </div>
+                                            <nav class="d-flex justify-content-center">
+                                                <div class="mb-3" id="pagination-container"></div>
+                                            </nav>
+                                        </div>
                                     </div>
+                                    
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <nav class="d-flex justify-content-center">
-                        <div class="mb-3" id="pagination-container"></div>
-                    </nav>
+                    
                 </div>
             </div>
         </div>
@@ -119,7 +150,7 @@
     <div class="modal-content">
 		<!-- Modal body -->
 		<div class="modal-body text-center">
-			<span class="text-weight-bolder text-primary">Loading...</span>
+			<span class="text-weight-bolder text-primary">Loading...</span><br>
 			<img src="{{ asset('img/Loading_progress.gif') }}" class="mx-auto d-block">
 		</div>
     </div>
@@ -195,7 +226,7 @@
                 </div>
                 <div class="row save-list-view">
                     <div class="col-md-12">
-                        <h2 class="list-header"></h2><br>
+                        <h6 class="list-header"></h6><br>
                         <span class="notify"></span>
                         <button type="button" class="btn btn-outline-success mx-auto save-list">Save</button>
                     </div>
