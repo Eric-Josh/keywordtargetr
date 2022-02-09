@@ -280,14 +280,14 @@ $(function(){
                 for (let i = 0; i < json.topics.length; i++) {
                     if(json.topics[i].topic != '' ){
                         if( !json.topics[i].topic.includes(`#`))
-                        keywordSuggestMore.push(json.topics[i].topic)
+                            keywordSuggestMore.push(json.topics[i].topic)
                     }
                 }
 
                 for (let i = 0; i < json2.topics.length; i++) {
                     if(json2.topics[i].topic != '' ){
                         if( !json2.topics[i].topic.includes(`#`))
-                        keywordSuggestMore.push(json2.topics[i].topic)
+                            keywordSuggestMore.push(json2.topics[i].topic)
                     }
                 }
             }
@@ -531,11 +531,7 @@ $(function(){
             })
 
             for (var i=0; i<selectedKeywords.length; i++){
-                if(keywords.length == i){
-                    keywords += selectedKeywords[i]
-                }else{
-                    keywords += selectedKeywords[i]+"\n";
-                }                    
+                keywords += selectedKeywords[i]+"\n";                   
             }
 
             let $temp = $("<textarea>");

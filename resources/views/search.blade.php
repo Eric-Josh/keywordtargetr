@@ -114,7 +114,14 @@
                                     <div class="tab-content">
                                         <div id="menu1" class="container tab-pane active"><br>
                                             <div class="table-responsive">
-                                                <table class="table widget-26">
+                                                <table class="table widget-26" id="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th></th>
+                                                            <th>Keywords </th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
                                                     <tbody id="tbody"></tbody>
                                                 </table>
                                             </div>
@@ -242,4 +249,9 @@
     </div>
 </div>
 <script src="{{ asset('js/switch-provider.js') }}"></script>
+<script>
+    $(function(){
+        $('body #table').tablesorter();
+    })
+</script>
 @stop

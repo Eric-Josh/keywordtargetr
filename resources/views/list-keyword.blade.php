@@ -51,7 +51,14 @@
                                 </div>
                                 <div class="result-body">
                                     <div class="table-responsive">
-                                        <table class="table widget-26">
+                                        <table class="table widget-26" id="table-sorter">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Keywords <i class="fas fa-sort" id="title_header"></i></th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
                                             <tbody id="tbody">
                                                 @forelse($keywords as $keyword)
                                                 <tr>
@@ -139,7 +146,7 @@
 <script src="{{ asset('js/switch-provider.js') }}"></script>
 <script>
     $(function(){
-        $('div span .inline-flex').hide()
+        $('#table-sorter').tablesorter();
     })
 </script>
 @stop
