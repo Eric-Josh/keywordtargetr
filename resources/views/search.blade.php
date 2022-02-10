@@ -2,7 +2,7 @@
 
 @section('content')
 <nav class="navbar navbar-expand-sm bg-light navbar-light">
-    <a class="navbar-brand text-primary text-capitalize header-title" href="{{ route('search') }}">keyword targetr</a>
+    <a class="navbar-brand text-primary text-capitalize header-title" href="{{ route('search') }}">keywordTargetr</a>
     <ul class="navbar-nav">
         <li class="nav-item">
             <a class="nav-link" href="{{ route('list.show') }}">Saved List</a>
@@ -15,11 +15,11 @@
         <div class="col-lg-12 card-margin">
             <div class="card search-form">
                 <div class="card-body p-0">
-                    <!-- <form method="post" action="{{ route('keyword.search') }}" id="search-form"> -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="row no-gutters">
-                                    <div class="col-lg-2 col-md-3 col-sm-12 p-0">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row no-gutters">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <select class="form-control" id="provider" name="provider">
                                             <option value="" disabled selected hidden>Provider</option>
                                             <option value="Google" {{ request()->query('provider') == 'Google' ? 'selected': ''}}>Google</option>
@@ -28,21 +28,65 @@
                                             <option value="Twitter" {{ request()->query('provider') == 'Twitter' ? 'selected': ''}}>Twitter</option>
                                         </select>
                                     </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-12 p-0">
-                                        <input type="text" placeholder="Keyword" class="form-control" 
-                                            id="keyword" name="keyword" value="{{ request()->query('q') }}">
-                                    </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                        <select class="form-control" id="language" name="language">
+                                    <input type="text" placeholder="Keyword" class="form-control" 
+                                        id="keyword" name="keyword" value="{{ request()->query('q') }}">
+                                    <div class="input-group-append">
+                                        <select class="form-control dropdown-select" id="language" name="language">
                                             <option value="" disabled selected hidden>Language</option>
                                             @foreach($languages as $language)
                                             <option value="{{ $language->language_code }}" 
-                                                {{ request()->query('language') == $language->language_code ? 'selected': ''}}>{{ $language->name }}
+                                                {{ request()->query('language') == $language->language_code ? 'selected': ''}}>{{ $language->language_name }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                        <select class="form-control dropdown-select" id="country" name="country">
+                                            <option value="" disabled selected hidden>Country</option>
+                                            @foreach($countries as $country)
+                                            <option value="{{ $country->country_code }}" 
+                                                {{ request()->query('country') == $country->country_code ? 'selected': ''}}>{{ $country->country_name }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                        <select class="form-control dropdown-select" id="amazon-language" name="amazon_language">
+                                            <option value="" disabled selected hidden>Language</option>
+                                            <option value="en_US" 
+                                                {{ request()->query('alanguage') == 'en_US' ? 'selected': ''}}>English - EN
+                                            </option>
+                                            <option value="es_US" 
+                                                {{ request()->query('alanguage') == 'es_US' ? 'selected': ''}}>Español - ES
+                                            </option>
+                                            <option value="zh_CN" 
+                                                {{ request()->query('alanguage') == 'zh_CN' ? 'selected': ''}}>简体中文 - ZH
+                                            </option>
+                                            <option value="de_DE" 
+                                                {{ request()->query('alanguage') == 'de_DE' ? 'selected': ''}}>Deutsch - DE
+                                            </option>
+                                            <option value="pt_BR" 
+                                                {{ request()->query('alanguage') == 'pt_BR' ? 'selected': ''}}>Português - PT
+                                            </option>
+                                            <option value="zh_TW" 
+                                                {{ request()->query('alanguage') == 'zh_TW' ? 'selected': ''}}>繁體中文 - ZH
+                                            </option>
+                                            <option value="ko_KR" 
+                                                {{ request()->query('alanguage') == 'ko_KR' ? 'selected': ''}}>한국어 - KO
+                                            </option>
+                                            <option value="he_IL" 
+                                                {{ request()->query('alanguage') == 'he_IL' ? 'selected': ''}}>עברית - HE
+                                            </option>
+                                            <option value="ar_AE" 
+                                                {{ request()->query('alanguage') == 'he_IL' ? 'selected': ''}}> العربية- AR
+                                            </option>
+                                        </select>
+                                        <select class="form-control dropdown-select" id="twit-lang" name="tlanguage">
+                                            <option value="" disabled selected hidden>Language</option>
+                                            @foreach($twitLangs as $twitLang)
+                                            <option value="{{ $language->language_code }}" 
+                                                {{ request()->query('tlanguage') == $twitLang->language_code ? 'selected': ''}}>{{ $twitLang->language_name }}
                                             </option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-lg-1 col-md-3 col-sm-12 p-0">
+                                    <div class="input-group-append">
                                         <button type="button" class="btn btn-base" id="search">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" 
                                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
@@ -55,7 +99,7 @@
                                 </div>
                             </div>
                         </div>
-                    <!-- </form> -->
+                    </div>
                 </div>
             </div>
         </div>

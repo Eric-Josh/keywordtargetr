@@ -14,6 +14,7 @@ class SavedListTransaction extends Model
         'list_id',
         'provider',
         'keyword',
-        'language_code'
+        'language_code',
+        'country_code'
     ];
 }

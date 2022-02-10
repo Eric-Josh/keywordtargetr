@@ -261,16 +261,6 @@ body{
     border: 1px solid #e6e4e9;
     border-radius: 8px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
+.dropdown-select{
+  width:170px !important;
+}

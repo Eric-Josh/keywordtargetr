@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Languages;
+use App\Models\Country;
 use App\Models\SavedList;
 use App\Models\SavedListTransaction;
+use App\Models\TwitterLanguage;
 use \Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\KeywordExport;
@@ -16,17 +18,22 @@ class KeywordController extends Controller
     public function index()
     {
         $languages = Languages::all();
+        $countries = Country::all();
         $lists = SavedList::all();
+        $twitLangs = TwitterLanguage::all();
 
-        return view('search', compact('languages','lists'));
+        return view('search', compact('languages','countries','lists','twitLangs'));
     }
 
     public function search(Request $request)
     {
         return redirect()->route('search', [
-            'q' => $request->keyword, 
+            'q'        => $request->keyword, 
             'language' => $request->language,
+            'country'  => $request->country,
+            'alanguage' => $request->amazon_language,
             'provider' => $request->provider,
+            'tlanguage' => $request->tlanguage,
         ]);
     }
 
@@ -108,10 +115,11 @@ class KeywordController extends Controller
     {
         foreach($request->keywordData as $keyword){
             SavedListTransaction::create([
-                'list_id' => $request->listId,
-                'provider' => $request->provider,
-                'keyword' => $keyword,
-                'language_code' => $request->langCode
+                'list_id'       => $request->listId,
+                'provider'      => $request->provider,
+                'keyword'       => $keyword,
+                'language_code' => $request->langCode,
+                'country_code'  => $request->countryCode
             ]);
         }
         

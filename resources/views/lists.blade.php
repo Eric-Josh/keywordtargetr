@@ -2,7 +2,7 @@
 
 @section('content')
 <nav class="navbar navbar-expand-sm bg-light navbar-light">
-    <a class="navbar-brand text-primary text-capitalize header-title" href="{{ route('search') }}">keyword targetr</a>
+    <a class="navbar-brand text-primary text-capitalize header-title" href="{{ route('search') }}">keywordTargetr</a>
     <ul class="navbar-nav">
         <li class="nav-item">
             <a class="nav-link active" href="{{ route('list.show') }}">Saved List</a>

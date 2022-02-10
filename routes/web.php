@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KeywordController;
 use App\Models\Languages;
+use App\Models\Country;
+use App\Models\TwitterLanguage;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +19,10 @@ use App\Models\Languages;
 
 Route::get('/', function () {
     $languages = Languages::all();
-    return view('home', compact('languages'));
+    $countries = Country::all();
+    $twitLangs = TwitterLanguage::all();
+    
+    return view('home', compact('languages','countries','twitLangs'));
 });
 
 Route::get('/search', [KeywordController::class, 'index'])->name('search');

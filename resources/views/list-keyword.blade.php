@@ -2,7 +2,7 @@
 
 @section('content')
 <nav class="navbar navbar-expand-sm bg-light navbar-light">
-    <a class="navbar-brand text-primary text-capitalize header-title" href="{{ route('search') }}">keyword targetr</a>
+    <a class="navbar-brand text-primary text-capitalize header-title" href="{{ route('search') }}">keywordTargetr</a>
     <ul class="navbar-nav">
         <li class="nav-item">
             <a class="nav-link active" href="{{ route('list.show') }}">Saved List</a>
@@ -79,6 +79,9 @@
                                                                     @csrf
                                                                     <input type="hidden" name="provider" value="{{ $keyword->provider }}">
                                                                     <input type="hidden" name="language" value="{{ $keyword->language_code }}">
+                                                                    <input type="hidden" name="country" value="{{ $keyword->country_code ?? '' }}">
+                                                                    <input type="hidden" name="amazon_language" value="{{ $keyword->language_code }}">
+                                                                    <input type="hidden" name="tlanguage" value="{{ $keyword->language_code }}">
                                                                     <input type="hidden" name="keyword" value="{{ $keyword->keyword }}">
 
                                                                     <button type="submit" class="btn btn-outline-primary text-xs shadow-sm keyword-search" 
@@ -92,12 +95,28 @@
                                                                     <i class="fab fa-google fa-md"></i>
                                                                 </a>
                                                             </div>
+                                                            @if($keyword->provider == 'Google' || $keyword->provider == 'Youtube')
                                                             <div class="col-md-1">
                                                                 <a href="https://www.youtube.com/results?hl={{ $keyword->language_code }}&search_query={{ $keyword->keyword }}" 
                                                                     target="_blank" role="button" class="btn btn-sm btn-danger shadow-sm">
                                                                     <i class="fab fa-youtube-square fa-md"></i>
                                                                 </a>
                                                             </div>
+                                                            @elseif($keyword->provider == 'Amazon')
+                                                            <div class="col-md-1">
+                                                                <a href="https://www.amazon.com/s?k={{ $keyword->keyword }}&language={{ $keyword->language_code }}" 
+                                                                    target="_blank" role="button" class="btn btn-sm btn-outline-warning shadow-sm">
+                                                                    <i class="fab fa-amazon"></i>
+                                                                </a>
+                                                            </div>
+                                                            @elseif($keyword->provider == 'Twitter')
+                                                            <div class="col-md-1">
+                                                                <a href="https://twitter.com/search?q={{ $keyword->keyword }}&lang={{ $keyword->language_code }}&src=typeahead_click&f=live" 
+                                                                    target="_blank" role="button" class="btn btn-sm btn-outline-primary shadow-sm">
+                                                                    <i class="fab fa-twitter"></i>
+                                                                </a>
+                                                            </div>
+                                                            @endif
                                                         </div>
                                                     </td>
                                                 </tr>

@@ -3,14 +3,43 @@ $(function(){
     let alphas = 'abcdefghijklmnopqrstuvwxyz1234567890'.split('');
     let keyworder, keysuggester;
 
-    // auto search
-    if( $('#provider').val() != null && $('#keyword').val() !='' &&  $('#language').val() != null ){
+    $('#amazon-language').hide()
+    $('#twit-lang').hide()
+    $('#provider').change(function(){
+        if($(this).val() == 'Google'){
+            $('#country').fadeIn()
+            $('#language').fadeIn()
+            $('#amazon-language').fadeOut()
+            $('#twit-lang').hide()
+        }else if($(this).val() == 'Youtube'){
+            $('#country').fadeIn()
+            $('#language').fadeIn()
+            $('#amazon-language').fadeOut()
+            $('#twit-lang').hide()
+        }else if($(this).val() == 'Amazon'){
+            $('#country').fadeOut()
+            $('#language').fadeOut()
+            $('#amazon-language').fadeIn()
+            $('#twit-lang').hide()
+        }else if($(this).val() == 'Twitter'){
+            $('#country').fadeOut()
+            $('#language').fadeOut()
+            $('#amazon-language').hide()
+            $('#twit-lang').fadeIn()
+        }else{
 
-        let googleApi= `https://suggestqueries.google.com/complete/search?client=firefox&hl=${$('#language').val()}&q`;
-        let youtubeApi= `https://clients1.google.com/complete/search?client=youtube&gs_ri=youtube&ds=yt&hjson=t&hl=${$('#language').val()}&q`;
-        let amazonApi = `http://completion.amazon.com/search/complete?search-alias=aps&client=amazon-search-ui&mkt=1&q=${$('#keyword').val()}`;
-        let twitterApi = `https://twitter.com/i/search/typeahead.json?count=10&filters=true&q=%23${$('#keyword').val()}&result_type=hashtags&src=COMPOSE`;
-        let twitterApi2 = `https://twitter.com/i/search/typeahead.json?count=10&filters=true&q=${$('#keyword').val()}&result_type=suggestions&src=COMPOSE`;
+        }
+    })
+    
+
+    // auto search
+    if( $('#provider').val() != null && $('#keyword').val() !='' ){
+
+        let googleApi= `https://suggestqueries.google.com/complete/search?client=chrome-omni&hl=${$('#language').val()}&gl=${$('#country').val()}`;
+        let youtubeApi= `https://clients1.google.com/complete/search?client=youtube&gs_ri=youtube&ds=yt&hjson=t&hl=${$('#language').val()}&gl=${$('#country').val()}`;
+        let amazonApi = `http://completion.amazon.com/search/complete?search-alias=aps&client=amazon-search-ui&mkt=1&language=${$('#amazon-language').val()}`;
+        let twitterApi = `https://twitter.com/i/search/typeahead.json?count=10&filters=true&result_type=hashtags&src=COMPOSE&q`;
+        let twitterApi2 = `https://twitter.com/i/search/typeahead.json?count=10&filters=true&result_type=suggestions&src=COMPOSE&q`;
 
         $('#loadModal').modal({backdrop:'static', keyboard:false, show:true})
 
@@ -19,25 +48,35 @@ $(function(){
         }else if($('#provider').val() == 'Youtube'){
             youKeywordList(youtubeApi, alphas, $('#keyword').val())
         }else if($('#provider').val() == 'Amazon'){
+            $('#country').fadeOut()
+            $('#language').fadeOut()
+            $('#amazon-language').fadeIn()
+            $('#twit-lang').hide()
             amaKeywordList(amazonApi)
         }else if($('#provider').val() == 'Twitter'){
-            twitKeywordList(twitterApi, twitterApi2)
+            $('#country').fadeOut()
+            $('#language').fadeOut()
+            $('#amazon-language').hide()
+            $('#twit-lang').fadeIn()
+            twitKeywordList(twitterApi, $('#keyword').val(), twitterApi2)
         }
     }
 
     $('#search').click(function(){
         let provider = $('#provider').val(),
             keyword = $('#keyword').val(),
-            lang = $('#language').val();
+            lang = $('#language').val(),
+            country = $('#country').val(),
+            amaLang = $('#amazon-language').val();
 
         $(this).attr('disabled', true)
         $('#loadModal').modal({backdrop:'static', keyboard:false, show:true})
 
         if(keyword != ''){
             // autocomplete search api providers
-            let googleApi= `https://suggestqueries.google.com/complete/search?client=firefox&hl=${lang}&q`;
-            let youtubeApi= `https://clients1.google.com/complete/search?client=youtube&gs_ri=youtube&ds=yt&hjson=t&hl=${lang}&q`;
-            let amazonApi = `http://completion.amazon.com/search/complete?search-alias=aps&client=amazon-search-ui&mkt=1&q`;
+            let googleApi= `https://suggestqueries.google.com/complete/search?client=chrome-omni&hl=${lang}&gl=${country}`;
+            let youtubeApi= `https://clients1.google.com/complete/search?client=youtube&gs_ri=youtube&ds=yt&hjson=t&hl=${lang}&gl=${country}`;
+            let amazonApi = `http://completion.amazon.com/search/complete?search-alias=aps&client=amazon-search-ui&mkt=1&language=${amaLang}`;
             let twitterApi = `https://twitter.com/i/search/typeahead.json?count=10&filters=true&result_type=hashtags&src=COMPOSE&q`;
             let twitterApi2 = `https://twitter.com/i/search/typeahead.json?count=10&filters=true&result_type=suggestions&src=COMPOSE&q`;
 
@@ -56,7 +95,7 @@ $(function(){
     async function goKeywordList(googleApi, alphas, keyword){
         let keywordData = [];
         try{
-            const response = await axios.get('https://api.allorigins.win/get?url=' + encodeURIComponent(`${googleApi}=${keyword}`));
+            const response = await axios.get('https://api.allorigins.win/get?url=' + encodeURIComponent(`${googleApi}&q=${keyword}`));
             // handle success	    
             let content = response.data.contents; 
             let json = JSON.parse(content);
@@ -76,28 +115,36 @@ $(function(){
     async function goMoreKeywordList(googleApi, alphas, keyword, keywordData){
         let keywordDataMore = [];
         for(let i=0; i<alphas.length; i++){
-            let url = `${googleApi}=${keyword}+${alphas[i]}`;
-            let url2 = `${googleApi}=${alphas[i]}+${keyword}`;
+            let url = `${googleApi}&q=${keyword}+${alphas[i]}`;
+            // let url2 = `${googleApi}&q=${alphas[i]}+${keyword}`;
+            let url3 = `${googleApi}&cp=1&q=${alphas[i]}+${keyword}`;
     
             try{
                 const res = await axios.get('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
-                const res2 = await axios.get('https://api.allorigins.win/get?url=' + encodeURIComponent(url2));
+                // const res2 = await axios.get('https://api.allorigins.win/get?url=' + encodeURIComponent(url2));
+                const res3 = await axios.get('https://api.allorigins.win/get?url=' + encodeURIComponent(url3));
     
                 let content = res.data.contents;
-                let content2 = res2.data.contents; 
+                // let content2 = res2.data.contents; 
+                let content3 = res3.data.contents;
+
                 let json = JSON.parse(content);
-                let json2 = JSON.parse(content2);
-                $(".display").empty();
+                // let json2 = JSON.parse(content2);
+                let json3 = JSON.parse(content3);
     
                 for (let i = 0; i < json[1].length; i++) {
                     if(json[1][i] != ''){
                         keywordDataMore.push(json[1][i])
                     }
                 }
-
-                for (let i = 0; i < json2[1].length; i++) {
-                    if(json2[1][i] != ''){
-                        keywordDataMore.push(json2[1][i])
+                // for (let i = 0; i < json2[1].length; i++) {
+                //     if(json2[1][i] != ''){
+                //         keywordDataMore.push(json2[1][i])
+                //     }
+                // }
+                for (let i = 0; i < json3[1].length; i++) {
+                    if(json3[1][i] != ''){
+                        keywordDataMore.push(json3[1][i])
                     }
                 }
 
@@ -114,7 +161,7 @@ $(function(){
         let keywordData = [];
     
         try{
-            const response = await axios.get('https://api.allorigins.win/get?url=' + encodeURIComponent(`${youtubeApi}=${keyword}`));
+            const response = await axios.get('https://api.allorigins.win/get?url=' + encodeURIComponent(`${youtubeApi}&q=${keyword}`));
             // handle success	    
             let content = response.data.contents; 
             let json = JSON.parse(content); 
@@ -136,8 +183,8 @@ $(function(){
         let keywordDataMore = [];
     
         for(let i=0; i<alphas.length; i++){
-            let url = `${youtubeApi}=${keyword}+${alphas[i]}`;
-            let url2 = `${youtubeApi}=${alphas[i]}+${keyword}`;
+            let url = `${youtubeApi}&q=${keyword}+${alphas[i]}`;
+            let url2 = `${youtubeApi}&cp=1&q=${alphas[i]}+${keyword}`;
     
             try{
                 const res = await axios.get('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
@@ -174,7 +221,7 @@ $(function(){
     async function amaKeywordList(amazonApi, keyword){
         let keywordData = [];
         try{
-            const response = await axios.get('https://api.allorigins.win/get?url=' + encodeURIComponent(`${amazonApi}=${keyword}`));
+            const response = await axios.get('https://api.allorigins.win/get?url=' + encodeURIComponent(`${amazonApi}&q=${keyword}`));
             // handle success	    
             let content = response.data.contents; 
             let json = JSON.parse(content);
@@ -195,8 +242,8 @@ $(function(){
         let keywordDataMore = [];
     
         for(let i=0; i<alphas.length; i++){
-            let url = `${amazonApi}=${keyword}+${alphas[i]}`;
-            let url2 = `${amazonApi}=${alphas[i]}+${keyword}`;
+            let url = `${amazonApi}&q=${keyword}+${alphas[i]}`;
+            let url2 = `${amazonApi}&q=${alphas[i]}+${keyword}`;
     
             try{
                 const res = await axios.get('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
@@ -224,7 +271,7 @@ $(function(){
     
         // merge keywordData and keywordDataMore array
         const merger = keywordData.concat(keywordDataMore);
-        generate_data(merger)
+        generate_ama_data(merger)
     }
 
     async function twitKeywordList(twitterApi, keyword, twitterApi2){
@@ -344,9 +391,53 @@ $(function(){
         $('#loadModal').modal('hide')
     }
 
+    function generate_ama_data(merger){
+        lang = $('#amazon-language').val();
+        $('#pagination-container1').pagination({
+            dataSource: merger,
+            className: 'paginationjs-theme-blue',
+            pageSize: 20,
+            callback: function(merger, pagination, pageSize) {
+                $("#tbody").empty();
+                $.each(merger, (index, item) => {
+                    keyworder = `
+                    <tr>
+                        <td>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input single-check"
+                                        data-item="${item}"
+                                    >
+                                </label>
+                            </div>
+                        </td>
+                        <td>${item}</td>
+                        <td>
+                            <a class="btn btn-outline-primary text-sm shadow-sm keyword-search" role="button" data-keyitem="${item}">
+                                <i class="fas fa-search"></i> Keyword
+                            </a>
+                            <a href="https://www.google.com/search?hl=${lang}&q=${item}" target="_blank" role="button" class="btn btn-sm btn-primary shadow-sm">
+                                <i class="fab fa-google fa-md"></i>
+                            </a>
+                            <a href="https://www.amazon.com/s?k=${item}&language=${lang}" target="_blank" role="button" class="btn btn-sm btn-outline-warning shadow-sm">
+                                <i class="fab fa-amazon"></i>
+                            </a>
+                        </td>
+                    </tr>   
+                    `;
+                    $("#tbody").append(keyworder);
+                })
+            }
+        })
+        $('.twit-tags').hide()
+        $('#total-arr').html(`<b>1-20</b> of <b>${merger.length}</b>`)
+        $('#search').attr('disabled', false)
+        $('#loadModal').modal('hide')
+    }
+
     function generate_twit_data(keywordSuggest, merger)
     {
-        lang = $('#language').val();
+        var lang = $('#twit-lang').val();
         $('#pagination-container').pagination({
             dataSource: merger,
             className: 'paginationjs-theme-blue',
@@ -399,8 +490,8 @@ $(function(){
                             <a href="https://www.google.com/search?hl=${lang}&q=${item}" target="_blank" role="button" class="btn btn-sm btn-primary shadow-sm">
                                 <i class="fab fa-google fa-md"></i>
                             </a>
-                            <a href="https://www.youtube.com/results?hl=${lang}&search_query=${item}" target="_blank" role="button" class="btn btn-sm btn-danger shadow-sm">
-                                <i class="fab fa-youtube-square fa-md"></i>
+                            <a href="https://twitter.com/search?q=${item}&lang=${lang}&src=typeahead_click&f=live" target="_blank" role="button" class="btn btn-sm btn-outline-primary shadow-sm">
+                                <i class="fab fa-twitter"></i>
                             </a>
                         </td>
                     </tr>   
@@ -617,6 +708,15 @@ $(function(){
             element = this;
         });
 
+        var language;
+        if($('#provider').val() == 'Google'|| $('#provider').val() == 'Youtube'){
+            language = $('#language').val();
+        }else if($('#provider').val() == 'Amazon'){
+            language = $('#amazon-language').val();
+        }else if($('#provider').val() == 'Twitter'){
+            language = $('#twit-lang').val();
+        }
+
         // post saved data
         $.ajax({
             url: '/search/list/store',
@@ -625,7 +725,8 @@ $(function(){
                 listId: localStorage.getItem('listId'),
                 provider: $('#provider').find(":selected").text(),
                 keywordData: keywordData,
-                langCode: $('#language').val()
+                langCode: language,
+                countryCode: $('#country').val(),
             },
             success:function(response){
                 $('.save-list').hide();

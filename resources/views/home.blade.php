@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-5">
-    <h1 class="text-capitalize text-weight-bolder text-primary text-center header-title">keyword targetr</h1>
+    <h1 class="text-capitalize text-weight-bolder text-primary text-center header-title">keywordTargetr</h1>
     <p class="text-capitalize text-center display-5">Find Great Keywords Using Autocomplete</p>
 </div>
 <div class="container">
@@ -15,35 +15,59 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="row no-gutters">
-                                    <div class="col-lg-2 col-md-3 col-sm-12 p-0">
-                                        <select class="form-control" id="provider" name="provider">
-                                            <option value="" disabled selected hidden>Provider</option>
-                                            <option value="Google">Google</option>
-                                            <option value="Youtube">Youtube</option>
-                                            <option value="Amazon">Amazon</option>
-                                            <option value="Twitter">Twitter</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-12 p-0">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <select class="form-control" id="provider" name="provider">
+                                                <option value="" disabled selected hidden>Provider</option>
+                                                <option value="Google">Google</option>
+                                                <option value="Youtube">Youtube</option>
+                                                <option value="Amazon">Amazon</option>
+                                                <option value="Twitter">Twitter</option>
+                                            </select>
+                                        </div>
                                         <input type="text" placeholder="Keyword" class="form-control" id="search" name="keyword">
-                                    </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-                                        <select class="form-control" id="language" name="language">
-                                            <option value="" disabled selected hidden>Language</option>
-                                            @foreach($languages as $language)
-                                            <option value="{{ $language->language_code }}">{{ $language->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-1 col-md-3 col-sm-12 p-0">
-                                        <button type="submit" class="btn btn-base">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" 
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
-                                                stroke-linejoin="round" class="feather feather-search">
-                                                    <circle cx="11" cy="11" r="8"></circle>
-                                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                            </svg>
-                                        </button>
+                                        <div class="input-group-append">
+                                            <select class="form-control dropdown-select" id="language" name="language">
+                                                <option value="" disabled selected hidden>Language</option>
+                                                @foreach($languages as $language)
+                                                <option value="{{ $language->language_code }}">{{ $language->language_name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <select class="form-control dropdown-select" id="country" name="country">
+                                                <option value="" disabled selected hidden>Country</option>
+                                                @foreach($countries as $country)
+                                                <option value="{{ $country->country_code }}">{{ $country->country_name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <select class="form-control dropdown-select" id="amazon-language" name="amazon_language">
+                                                <option value="" disabled selected hidden>Language</option>
+                                                <option value="en_US">English - EN</option>
+                                                <option value="es_US">Español - ES</option>
+                                                <option value="zh_CN">简体中文 - ZH</option>
+                                                <option value="de_DE">Deutsch - DE</option>
+                                                <option value="pt_BR">Português - PT</option>
+                                                <option value="zh_TW">繁體中文 - ZH</option>
+                                                <option value="ko_KR">한국어 - KO</option>
+                                                <option value="he_IL">עברית - HE</option>
+                                                <option value="ar_AE"> العربية- AR</option>
+                                            </select>
+                                            <select class="form-control dropdown-select" id="twit-lang" name="tlanguage">
+                                                <option value="" disabled selected hidden>Language</option>
+                                                @foreach($twitLangs as $twitLang)
+                                                <option value="{{ $twitLang->language_code }}">{{ $twitLang->language_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-base" id="search">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" 
+                                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+                                                    stroke-linejoin="round" class="feather feather-search">
+                                                        <circle cx="11" cy="11" r="8"></circle>
+                                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -54,7 +78,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-12">
             <div class="card card-margin">
                 <div class="card-body">
@@ -638,8 +662,41 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>
 
-
+<script>
+$(function(){
+    $('#amazon-language').hide()
+    $('#twit-lang').hide()
+    $('#provider').change(function(){
+        if($(this).val() == 'Google'){
+            $('#country').fadeIn()
+            $('#language').fadeIn()
+            $('#amazon-language').fadeOut()
+            $('#twit-lang').hide()
+        }else if($(this).val() == 'Youtube'){
+            $('#country').fadeIn()
+            $('#language').fadeIn()
+            $('#amazon-language').fadeOut()
+            $('#twit-lang').hide()
+        }else if($(this).val() == 'Amazon'){
+            $('#country').fadeOut()
+            $('#language').fadeOut()
+            $('#amazon-language').fadeIn()
+            $('#twit-lang').hide()
+        }else if($(this).val() == 'Twitter'){
+            $('#country').fadeOut()
+            $('#language').fadeOut()
+            $('#amazon-language').hide()
+            $('#twit-lang').fadeIn()
+        }else{
+            $('#country').fadeIn()
+            $('#language').fadeIn()
+            $('#amazon-language').fadeOut()
+            $('#twit-lang').hide()
+        }
+    })
+})
+</script>
 @stop

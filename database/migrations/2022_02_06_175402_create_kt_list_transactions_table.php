@@ -19,6 +19,7 @@ class CreateKtListTransactionsTable extends Migration
             $table->string('provider', 10);
             $table->string('keyword');
             $table->string('language_code', 5);
+            $table->string('country_code', 5);
             $table->timestamps();
         });
     }
