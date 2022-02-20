@@ -2,7 +2,9 @@
 
 @section('content')
 <div class="container mt-5">
-    <h1 class="text-capitalize text-weight-bolder text-primary text-center header-title">keywordTargetr</h1>
+    <h1 class="text-capitalize text-weight-bolder text-primary text-center header-title"> 
+        <img src="{{ asset('img/logo.png') }}" class="img-fluid" alt="logo" width="100">
+        keywordTargetr</h1>
     <p class="text-capitalize text-center display-5">Find Great Keywords Using Autocomplete</p>
 </div>
 <div class="container">

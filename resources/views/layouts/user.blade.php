@@ -32,6 +32,16 @@
 <body>
     <div id="main" >
         <div class="flex flex-col min-h-screen text-gray-900 bg-gray-100 dark:bg-dark-eval-0 dark:text-gray-200">
+            <nav class="navbar navbar-expand-sm bg-light navbar-light">
+                <a class="navbar-brand text-primary text-capitalize header-title" href="{{ route('search') }}">
+                <img src="{{ asset('img/logo2.png') }}" alt="logo" width="50">
+                    keywordTargetr</a>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ route('list.show') }}">Saved List</a>
+                    </li>
+                </ul>
+            </nav>
             @yield('content')
         </div>
     </div>
