@@ -38,3 +38,4 @@ Route::put('/list/put/{id}', [KeywordController::class, 'updateList'])->name('li
 Route::delete('/list/delete/{id}', [KeywordController::class, 'destroyList'])->name('list.delete');
 Route::get('/list/keywords/{id}', [KeywordController::class, 'listKeyword'])->name('list.keyword');
 Route::get('/install', [InstallerController::class, 'install'])->name('installer');
+Route::post('/install/post', [InstallerController::class, 'store'])->name('installer.store');
