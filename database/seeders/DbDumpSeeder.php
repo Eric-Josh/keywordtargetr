@@ -14,7 +14,8 @@ class DbDumpSeeder extends Seeder
      */
     public function run()
     {
-        exec("mysql -u".config('app.db_username')." -p".config('app.db_password')." ".config('app.database').
-            " < ".public_path('sql/keywordtargetr.sql'));
+        $path = public_path('sql/keywordtargetr.sql');
+        $sql = file_get_contents($path);
+        DB::unprepared($sql);
     }
 }

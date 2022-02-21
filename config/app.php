@@ -14,8 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-    
-    'database'    => env('DB_DATABASE'),
+    'database' => env('DB_DATABASE'),
     'db_username' => env('DB_USERNAME'),
     'db_password' => env('DB_PASSWORD'),
 

@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="form-group">
-                    <input type="url" class="form-control" name="app_url" placeholder="APP Url" required>
+                    <input type="url" class="form-control" name="app_url" placeholder="Site Url" required>
                 </div>
             </div>
         </div>

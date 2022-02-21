@@ -51,12 +51,24 @@ class InstallerController extends Controller
                 }
             }
         }
-        
+
+        return redirect()->route('install-complete');
+    }
+
+    public function completed()
+    {
+        return view('complete-install');
+    }
+
+    public function seedDb(Request $request)
+    {
         // artisan import db
         Log::info('==============Migration Started...==============');
 
-        Artisan::call('db:seed');
+        Artisan::call('db:seed --force');
+        
+        Log::info('==============Migration Completed...==============');
 
-        return redirect('/');
+        return redirect()->route('home');
     }
 }

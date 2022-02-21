@@ -19,6 +19,7 @@
 
     <link rel="stylesheet" href="{{ asset('css/paginate.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="shortcut icon" href="{{ asset('img/logo2.png') }}" type="image/x-icon">
 
     <!-- Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
